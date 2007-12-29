@@ -67,4 +67,3 @@
 - !!python/object:__main__.Obj {location: 14, name: cat, oid: 15}
 - !!python/object:__main__.Obj {location: 4, name: cat, oid: 16}
 - *id011
-- !!python/object:__main__.Player {location: 1, name: beth, oid: 18}
