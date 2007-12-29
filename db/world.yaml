@@ -1,0 +1,74 @@
+- &id001 !!python/object:mud.Room
+  exits:
+    east: &id011 !!python/object:__main__.Room
+      exits:
+        west: *id001
+      name: Porch
+      oid: 17
+    north: &id004 !!python/object:__main__.Room
+      exits:
+        south: *id001
+      name: Office
+      oid: 4
+    south: &id005 !!python/object:__main__.Room
+      exits:
+        north: *id001
+      name: LivingRoom
+      oid: 5
+    up: &id002 !!python/object:__main__.Room
+      exits:
+        down: *id001
+        up: &id003 !!python/object:__main__.Room
+          exits:
+            down: *id002
+            north: &id009 !!python/object:__main__.Room
+              exits:
+                south: *id003
+              name: Bathroom
+              oid: 13
+            northeast: &id010 !!python/object:__main__.Room
+              exits:
+                southwest: *id003
+              name: Nursery
+              oid: 14
+            south: &id007 !!python/object:__main__.Room
+              exits:
+                north: *id003
+              name: MasterBedroom
+              oid: 11
+            southeast: &id008 !!python/object:__main__.Room
+              exits:
+                northwest: *id003
+              name: GuestBeddroom
+              oid: 12
+          name: Hall
+          oid: 8
+      name: Stairs
+      oid: 6
+    west: &id006 !!python/object:__main__.Room
+      exits:
+        east: *id001
+      name: Hall
+      oid: 7
+  name: Lobby
+  oid: 1
+- !!python/object:__main__.Player {location: 4, name: jose, oid: 2}
+- !!python/object:__main__.Obj {location: 2, name: rose, oid: 3}
+- *id004
+- *id005
+- *id002
+- *id006
+- *id003
+- !!python/object:__main__.Obj {location: 2, name: letter, oid: 9}
+- !!python/object:__main__.Player
+  location: 1
+  name: !!binary |
+    //sf//sg//sY//sn//0B//sD//0D
+  oid: 10
+- *id007
+- *id008
+- *id009
+- *id010
+- !!python/object:__main__.Obj {location: 14, name: cat, oid: 15}
+- !!python/object:__main__.Obj {location: 4, name: cat, oid: 16}
+- *id011
