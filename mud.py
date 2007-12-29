@@ -13,14 +13,18 @@ import yaml
 rand = random.Random()
 world = False
 
+AUTHOR = "Jose Nazario"
 VERSION = "1.0.0"
 
 BANNER = """
 
-            This is TeensyMUD version %s
-               
- Based on Ruby code Copyright (C) 2005 by Jon A. Lambert
- Released under the terms of the TeensyMUD Public License
+                 This is PunyMUD version %s
+
+             Copyright (C) 2007 by Jose Nazario
+             Released under an Artistic License
+
+ Based on TeensyMUD Ruby code Copyright (C) 2005 by Jon A. Lambert
+ Original released under the terms of the TeensyMUD Public License
 
 
 Login> """ % VERSION
