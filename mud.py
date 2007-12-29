@@ -6,7 +6,7 @@
 # YAML implementation:
 # http://pyyaml.org/wiki/PyYAMLDocumentation
 
-import random, re
+import random, re, signal, sys
 from SocketServer import ThreadingTCPServer, BaseRequestHandler 
 import yaml
 
@@ -83,10 +83,6 @@ class Player(Obj):
         if getattr(self, 'sock', False): self.sock.send('%s\n' % s)
 
     def parse(self, m):
-	#print 'PARSE: %s' % m
-	#print 'WORLD: %s' % world.db
-	#print 'LOCATION: %s' % self.location
-	#print 'EXITS: %s' % world.find_by_oid(self.location).exits
 	m = m.strip()
         pat = re.compile('(\w+)\W(.*)')
 	try:
@@ -181,7 +177,6 @@ class World:
 	print 'Loading world ...',
 	self.db =  yaml.load(open('db/world.yaml', 'r'))
 	if not isinstance(self.db, list): self.db = [ self.db ]
-	#print self.db
 	self.dbtop = len(self.db)
 	print 'Done.'
 
@@ -269,6 +264,19 @@ class MudHandler(BaseRequestHandler):
 def main():
     global world
     world = World()
+    cont = True
+
+    def shutdown(num, frame):
+	world.global_message('World is shutting down, bye!')
+	for plr in world.players_at_location(None):
+	    try: plr.parse('quit')
+	    except: print 'ERROR: %s could not quit gracefully' % plr.name
+	world.save()
+	sys.exit()
+
+    signal.signal(signal.SIGINT, shutdown)
+    signal.signal(signal.SIGTERM, shutdown)
+
     z = ThreadingTCPServer(('', 4000), MudHandler)
     while True:
         try: z.handle_request()

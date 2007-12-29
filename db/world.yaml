@@ -60,11 +60,6 @@
 - *id006
 - *id003
 - !!python/object:__main__.Obj {location: 2, name: letter, oid: 9}
-- !!python/object:__main__.Player
-  location: 1
-  name: !!binary |
-    //sf//sg//sY//sn//0B//sD//0D
-  oid: 10
 - *id007
 - *id008
 - *id009
@@ -72,3 +67,4 @@
 - !!python/object:__main__.Obj {location: 14, name: cat, oid: 15}
 - !!python/object:__main__.Obj {location: 4, name: cat, oid: 16}
 - *id011
+- !!python/object:__main__.Player {location: 1, name: beth, oid: 18}
