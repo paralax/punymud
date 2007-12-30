@@ -214,7 +214,7 @@ class World(object):
 	print 'Loading world ...',
 	self.db =  yaml.load(open('db/world.yaml', 'r'))
 	if not isinstance(self.db, list): self.db = [ self.db ]
-	self.dbtop = len(self.db)
+	self.dbtop = max([ x.oid for x in self.db ])
 	print 'Done.'
 
     def getid(self):
