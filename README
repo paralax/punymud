@@ -1,13 +1,13 @@
 PunyMUD Server
-v 1.0.0
+v 1.1.0
 
 INTRODUCTION
 PunyMUD is a very simple mud server written in Python. It uses threading to
 handle multiple concurrent connections and YAML as a backend data store.
 
 This server was originally based on the TeensyMUD 2.0.0 codebase by John
-Lambert (the original was written in Ruby). This version was written to
-see if it could be done in Python.
+Lambert (the original was written in Ruby). PunyMUD was written to see if 
+it could be done in Python and for me to experiment with YAML.
 
 Does PunyMUD have a future? Maybe ... you decide!
 
@@ -51,6 +51,7 @@ Play commands
   i[nventory] = displays player inventory
   l[ook] = displays the contents of a room
   dr[op] = drops all objects in your inventory into the room
+  ex[amine] <object> = examine the named object
   g[get] = gets all objects in the room into your inventory
   k[ill] <name> = attempts to kill player (e.g. k bubba)
   s[ay] <message> = sends <message> to all players in the room
@@ -61,7 +62,8 @@ Play commands
 ===========================================================================
 OLC
   O <object name> = creates a new object (ex. O rose)
-  R <room name> <exit name to> <exit name back> = creates a new room and 
+  D <object number> = add description for an object
+  R <room name> <exit name to> <exit name back> = creates a new room and
     autolinks the exits using the exit names provided.
     (ex. R Kitchen north south)
 

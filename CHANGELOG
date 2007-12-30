@@ -1,0 +1,7 @@
+PunyMUD Changelog
+
+December 2007
+1.0.0 -> 1.1.0
+- fix some bugs with empty args in the parse() method
+- add descriptions to objects and rooms
+- you can examine objects
