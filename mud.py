@@ -157,13 +157,11 @@ class Player(Obj):
 	    except AttributeError: self.parse('help')
 	    try: oid = int(oid)
 	    except ValueError: self.parse('help')
-	    found = False
-	    for o in world.objects_at_location(None):
-		if o.oid == oid:
-		    o.description = desc
-		    world.save()
-		    found = True
-	    if found: self.sendto('Ok')
+	    o = world.find_by_oid(oid)
+	    if o:
+		o.description = desc
+		world.save()
+		self.sendto('Ok')
 	    else: self.sendto('Object %s not found' % oid)
 	elif cmd == 'R':
 	    if not arg: self.parse('help')
