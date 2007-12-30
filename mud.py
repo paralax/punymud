@@ -125,7 +125,7 @@ class Player(Obj):
 	elif cmd.startswith('c'):
 	    if arg: self.sendto(' You chat, "%s"' % arg)
 	    else: self.sendto(' Did you mean to say something?')
-	    world.global_message_others('%s chats, "%s"' % (self.name, arg))
+	    world.global_message_others('%s chats, "%s"' % (self.name, arg), self.oid)
 	elif cmd.startswith('g'):
 	    for q in world.objects_at_location(self.location):
 		q.location = self.oid
