@@ -35,6 +35,7 @@ Play commands
   i[nventory] = displays player inventory
   l[ook] = displays the contents of a room
   dr[op] = drops all objects in your inventory into the room
+  ex[amine] <object> = examine the named object
   g[get] = gets all objects in the room into your inventory
   k[ill] <name> = attempts to kill player (e.g. k bubba)
   s[ay] <message> = sends <message> to all players in the room
@@ -45,6 +46,7 @@ Play commands
 ===========================================================================
 OLC
   O <object name> = creates a new object (ex. O rose)
+  D <object number> = add description for an object
   R <room name> <exit name to> <exit name back> = creates a new room and 
     autolinks the exits using the exit names provided.
     (ex. R Kitchen north south)
@@ -56,6 +58,7 @@ class Obj:
        self.name = name
        self.location = location
        self.oid = -1
+       self.description = None
 
     def __repr__(self):
 	return 'Object: %s (id %s)' % (self.name, self.oid)
@@ -91,6 +94,7 @@ class Player(Obj):
 	    arg = args[1]
 	except IndexError:
 	    cmd = m
+	    arg = False
 	if cmd.lower() in [ x.lower() for x in world.find_by_oid(self.location).exits.keys() ]:
 	    self.location = world.find_by_oid(self.location).exits[cmd].oid
 	    self.parse('look')
@@ -104,6 +108,7 @@ class Player(Obj):
 	    for o in world.objects_at_location(self.oid):
 		self.sendto(o.name)
 	elif cmd.startswith('k'):
+	    if not arg: self.parse('help')
 	    d = world.find_player_by_name(arg)
 	    if d and rand.random() < 0.3:
 		world.global_message('%s kills %s' % (self.name, d.name))
@@ -113,11 +118,13 @@ class Player(Obj):
 	    else:
 		world.global_message('%s misses' % self.name)
 	elif cmd.startswith('s'):
-	    self.sendto(' You say "%s"' % arg)
+	    if arg: self.sendto(' You say "%s"' % arg)
+	    else: self.sendto(' Did you mean to say something?')
 	    for x in world.other_players_at_location(self.location, self.oid):
 		x.sendto(' %s says "%s"' % (self.name, arg))
 	elif cmd.startswith('c'):
-	    self.sendto('You chat, "%s"' % arg)
+	    if arg: self.sendto(' You chat, "%s"' % arg)
+	    else: self.sendto(' Did you mean to say something?')
 	    world.global_message_others('%s chats, "%s"' % (self.name, arg))
 	elif cmd.startswith('g'):
 	    for q in world.objects_at_location(self.location):
@@ -127,11 +134,39 @@ class Player(Obj):
 	    for q in world.objects_at_location(self.oid):
 		q.location = self.location
 	    self.sendto('Ok')
-	elif cmd.startswith('O'):
-	    world.add(Obj(arg.strip(), self.location))
-	    self.sendto('Ok')
-	    world.save()
-	elif cmd.startswith('R'):
+	elif cmd.startswith('ex'):
+	    if not arg: self.parse('help')
+	    found = False
+	    for o in world.objects_at_location(self.oid) + world.objects_at_location(self.location):
+		if o.name == arg.strip():
+		    if getattr(o, 'description', False): self.sendto(o.description)
+		    else: self.sendto("It's just a %s" % o.name)
+		    found = True
+	    if not found: self.parse('help')
+	elif cmd == 'O':
+	    if not arg: self.parse('help')
+	    try:
+		o = Obj(arg.strip(), self.location)
+		world.add(o)
+		self.sendto('Created object %s' % o.oid)
+		world.save()
+	    except AttributeError: self.parse('help')
+	elif cmd == 'D':
+	    if not arg: self.parse('help')
+	    try: oid, desc = arg.split(' ', 1)
+	    except AttributeError: self.parse('help')
+	    try: oid = int(oid)
+	    except ValueError: self.parse('help')
+	    found = False
+	    for o in world.objects_at_location(None):
+		if o.oid == oid:
+		    o.description = desc
+		    world.save()
+		    found = True
+	    if found: self.sendto('Ok')
+	    else: self.sendto('Object %s not found' % oid)
+	elif cmd == 'R':
+	    if not arg: self.parse('help')
 	    tmp = arg.split()
 	    if len(tmp) < 3:
 		self.sendto(HELP)
@@ -147,6 +182,8 @@ class Player(Obj):
 		world.save()
 	elif cmd.startswith('l'):
 	    self.sendto('Room: %s' % world.find_by_oid(self.location).name)
+	    if getattr(world.find_by_oid(self.location), 'description', False):
+		self.sendto(world.find_by_oid(self.location).description)
 	    self.sendto('Players:')
 	    for x in world.other_players_at_location(self.location, self.oid):
 		if getattr(x, 'sock', False): self.sendto('%s is here' % x.name)
@@ -233,7 +270,8 @@ class World:
 	l = []
 	for o in self.db:
 	    if isinstance(o, Obj) and not isinstance(o, Room) and not isinstance(o, Player):
-		if o.location == loc: l.append(o)
+		if loc and o.location == loc: l.append(o)
+		elif not loc: l.append(o)
 	return l
 
     def find_by_oid(self, i):
@@ -266,8 +304,9 @@ def main():
     world = World()
     cont = True
 
+    """
     def shutdown(num, frame):
-	world.global_message('World is shutting down, bye!')
+	world.global_message('World is shutting down')
 	for plr in world.players_at_location(None):
 	    try: plr.parse('quit')
 	    except: print 'ERROR: %s could not quit gracefully' % plr.name
@@ -276,11 +315,15 @@ def main():
 
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
+    """
 
     z = ThreadingTCPServer(('', 4000), MudHandler)
     while True:
         try: z.handle_request()
         except KeyboardInterrupt: break
+    for plr in world.players_at_location(None):
+        try: plr.parse('quit')
+	except: print 'ERROR: %s could not quit gracefully' % plr.name
     world.save()
 
 if __name__ == '__main__':
