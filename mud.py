@@ -14,7 +14,7 @@ rand = random.Random()
 world = False
 
 AUTHOR = "Jose Nazario"
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 BANNER = """
 
@@ -53,7 +53,7 @@ OLC
 ===========================================================================
 """
 
-class Obj:
+class Obj(object):
     def __init__(self, name, location):
        self.name = name
        self.location = location
@@ -201,7 +201,7 @@ MINIMAL_DB = """- !!python/object:mud.Room
   name: Lobby
   oid: 1
 """
-class World:
+class World(object):
     def __init__(self):
 	try:
 	    open('db/world.yaml', 'r')
@@ -302,28 +302,15 @@ class MudHandler(BaseRequestHandler):
 def main():
     global world
     world = World()
-    cont = True
-
-    """
-    def shutdown(num, frame):
-	world.global_message('World is shutting down')
-	for plr in world.players_at_location(None):
-	    try: plr.parse('quit')
-	    except: print 'ERROR: %s could not quit gracefully' % plr.name
-	world.save()
-	sys.exit()
-
-    signal.signal(signal.SIGINT, shutdown)
-    signal.signal(signal.SIGTERM, shutdown)
-    """
 
     z = ThreadingTCPServer(('', 4000), MudHandler)
-    while True:
-        try: z.handle_request()
-        except KeyboardInterrupt: break
-    for plr in world.players_at_location(None):
-        try: plr.parse('quit')
-	except: print 'ERROR: %s could not quit gracefully' % plr.name
+    try: z.serve_forever()
+    except KeyboardInterrupt:
+	world.global_message('World is shutting down')
+	for plr in world.players_at_location(None):
+            try: plr.parse('quit')
+	    except: print 'ERROR: %s could not quit gracefully' % plr.name
+	z.server_close()
     world.save()
 
 if __name__ == '__main__':
