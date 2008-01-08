@@ -142,7 +142,9 @@ class Player(Obj):
 		    if getattr(o, 'description', False): self.sendto(o.description)
 		    else: self.sendto("It's just a %s" % o.name)
 		    found = True
-	    if not found: self.parse('help')
+	    if not found:
+		if arg: self.sendto('No object %s found' % arg)
+		else: self.parse('help')
 	elif cmd == 'O':
 	    if not arg: self.parse('help')
 	    try:
@@ -164,7 +166,7 @@ class Player(Obj):
 		o.description = desc
 		world.save()
 		self.sendto('Ok')
-	    else: self.sendto('Object %s not found' % oid)
+	    elif oid: self.sendto('Object %s not found' % oid)
 	elif cmd == 'R':
 	    if not arg: self.parse('help')
 	    tmp = arg.split()
