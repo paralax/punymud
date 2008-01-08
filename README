@@ -1,5 +1,5 @@
 PunyMUD Server
-v 1.1.0
+v 1.1.1
 
 INTRODUCTION
 PunyMUD is a very simple mud server written in Python. It uses threading to

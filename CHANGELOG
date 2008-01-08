@@ -1,5 +1,11 @@
 PunyMUD Changelog
 
+January 2008
+1.1.0 -> 1.1.1
+- fix issue 2: D # (no description) causes disconnection
+- fix issue 3: Trying to examine something you do not have causes crash
+- still to come: whitespace cleanup
+
 December 2007
 1.0.0 -> 1.1.0
 - fix some bugs with empty args in the parse() method
