@@ -67,7 +67,6 @@ class Room(Obj):
     def __init__(self, name):
         self.exits = {}
         self.name = name
-	self.oid = -1
 
     def __repr__(self):
 	return 'Room: %s (id %s) - exits %s' % (self.name, self.oid, '|'.join(self.exits.keys()))
@@ -77,7 +76,6 @@ class Player(Obj):
 	if sock: self.sock = sock
         self.name = name
         self.location = 1
-	self.oid = -1
 
     def __repr__(self):
 	return 'Player: %s (id %s) - at %s' % (self.name, self.oid, self.location)
@@ -135,10 +133,12 @@ class Player(Obj):
 		q.location = self.location
 	    self.sendto('Ok')
 	elif cmd.startswith('ex'):
-	    if not arg: self.parse('help')
+	    if not isinstance(arg, str): self.parse('help')
+	    try: arg = arg.strip()
+	    except AttributeError: self.parse('help')
 	    found = False
 	    for o in world.objects_at_location(self.oid) + world.objects_at_location(self.location):
-		if o.name == arg.strip():
+		if o.name == arg:
 		    if getattr(o, 'description', False): self.sendto(o.description)
 		    else: self.sendto("It's just a %s" % o.name)
 		    found = True
@@ -152,9 +152,11 @@ class Player(Obj):
 		world.save()
 	    except AttributeError: self.parse('help')
 	elif cmd == 'D':
-	    if not arg: self.parse('help')
+	    if not isinstance(arg, str): self.parse('help')
+	    oid = False
 	    try: oid, desc = arg.split(' ', 1)
 	    except AttributeError: self.parse('help')
+	    except ValueError: self.parse('help')
 	    try: oid = int(oid)
 	    except ValueError: self.parse('help')
 	    o = world.find_by_oid(oid)
