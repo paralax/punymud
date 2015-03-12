@@ -51,6 +51,7 @@ It will start listening on TCP port 4000 for incoming connections
 
 ## HELP
 Play commands
+
       i[nventory] = displays player inventory
       l[ook] = displays the contents of a room
       dr[op] = drops all objects in your inventory into the room
