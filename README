@@ -1,7 +1,7 @@
-PunyMUD Server
+# PunyMUD Server
 v 1.1.1
 
-INTRODUCTION
+## INTRODUCTION
 PunyMUD is a very simple mud server written in Python. It uses threading to
 handle multiple concurrent connections and YAML as a backend data store.
 
@@ -11,18 +11,21 @@ it could be done in Python and for me to experiment with YAML.
 
 Does PunyMUD have a future? Maybe ... you decide!
 
-DOWNLOAD
+## DOWNLOAD
 You can find the source at https://github.com/paralax/punymud
 
-SYSTEM DEPENDENCIES
+## SYSTEM DEPENDENCIES
+
 Required
+
 - Python 2.3 or later
   http://www.python.org/
   This software was developed on OS X and may not work on Windows
+
 - PyYAML
   http://pyyaml.org/wiki/PyYAMLDocumentation
 
-FEATURES
+## FEATURES
 * Multithreaded network server
 * Supports multiple concurrent users
 * Global chat
@@ -34,38 +37,38 @@ FEATURES
 * Basic OLC for rooms and objects
 * Maintainable
 
-INSTALLATION
-1. tar -zxvf punymud*
-2. cd punymud*
-3. python mud.py
+## INSTALLATION
+    1. tar -zxvf punymud*
+    2. cd punymud*
+    3. python mud.py
 
 It will start listening on TCP port 4000 for incoming connections
 
-OPERATION
+## OPERATION
 * ^C to stop the server and save the world state
 * quit to stop playing
 * help or ? to see in-game help
 
-HELP
+## HELP
 Play commands
-  i[nventory] = displays player inventory
-  l[ook] = displays the contents of a room
-  dr[op] = drops all objects in your inventory into the room
-  ex[amine] <object> = examine the named object
-  g[get] = gets all objects in the room into your inventory
-  k[ill] <name> = attempts to kill player (e.g. k bubba)
-  s[ay] <message> = sends <message> to all players in the room
-  c[hat] <message> = sends <message> to all players in the game
-  h[elp]|?  = displays help
-  q[uit]    = quits the game (saves player)
-  <exit name> = moves player through exit named (ex. south)
-===========================================================================
-OLC
-  O <object name> = creates a new object (ex. O rose)
-  D <object number> = add description for an object
-  R <room name> <exit name to> <exit name back> = creates a new room and
-    autolinks the exits using the exit names provided.
-    (ex. R Kitchen north south)
+      i[nventory] = displays player inventory
+      l[ook] = displays the contents of a room
+      dr[op] = drops all objects in your inventory into the room
+      ex[amine] <object> = examine the named object
+      g[get] = gets all objects in the room into your inventory
+      k[ill] <name> = attempts to kill player (e.g. k bubba)
+      s[ay] <message> = sends <message> to all players in the room
+      c[hat] <message> = sends <message> to all players in the game
+      h[elp]|?  = displays help
+      q[uit]    = quits the game (saves player)
+      <exit name> = moves player through exit named (ex. south)
+    ===========================================================================
+    OLC
+      O <object name> = creates a new object (ex. O rose)
+      D <object number> = add description for an object
+      R <room name> <exit name to> <exit name back> = creates a new room and
+        autolinks the exits using the exit names provided.
+        (ex. R Kitchen north south)
 
-LICENSE
+## LICENSE
 Artistic license
